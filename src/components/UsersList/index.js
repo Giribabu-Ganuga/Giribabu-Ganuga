@@ -1,4 +1,6 @@
 import {Component} from 'react'
+import {MdNavigateNext, MdNavigateBefore} from 'react-icons/md'
+import {BiFirstPage, BiLastPage} from 'react-icons/bi'
 import Loader from 'react-loader-spinner'
 import UserDetailsItem from '../UserDetailsItem'
 import './index.css'
@@ -27,7 +29,7 @@ class UsersList extends Component {
   fetchAllTheUsers = async () => {
     this.setState({apiStatus: apiStatusConstants.inProgress})
 
-    const url = `https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json`
+    const url = `https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json?offset=5&limit=10`
     const response = await fetch(url)
 
     if (response.ok) {
@@ -140,10 +142,72 @@ class UsersList extends Component {
 
     return shouldShowUsersList ? (
       <ul className="users-list-container">
-        <li>
-          <button type="button" onClick={this.deleteSelectedUserItems}>
+        <li className="page-controls-container">
+          <button
+            type="button"
+            onClick={this.deleteSelectedUserItems}
+            className="delete-selected-button"
+          >
             Delete Selected
           </button>
+          <div className="page-numbers-container">
+            <button
+              type="button"
+              onClick={this.onChangePageNumber}
+              className="navigate-first"
+            >
+              <BiFirstPage color="black" size={20} />
+            </button>
+            <button
+              type="button"
+              onClick={this.onChangePageNumber}
+              className="navigate-previous"
+            >
+              <MdNavigateBefore color="black" size={20} />
+            </button>
+            <button
+              type="button"
+              onClick={this.onChangePageNumber}
+              className="page-number-button"
+            >
+              1
+            </button>
+            <button
+              type="button"
+              onClick={this.onChangePageNumber}
+              className="page-number-button"
+            >
+              2
+            </button>
+            <button
+              type="button"
+              onClick={this.onChangePageNumber}
+              className="page-number-button active"
+            >
+              3
+            </button>
+            <button
+              type="button"
+              onClick={this.onChangePageNumber}
+              className="page-number-button"
+            >
+              4
+            </button>
+            <button
+              type="button"
+              onClick={this.onChangePageNumber}
+              className="navigate-next"
+            >
+              <MdNavigateNext color="black" size={20} />
+            </button>
+            <button
+              type="button"
+              onClick={this.onChangePageNumber}
+              className="navigate-last"
+            >
+              <BiLastPage color="black" size={20} />
+            </button>
+          </div>
         </li>
         <li className="user-details-list-item">
           <div className="checkbox-container">
