@@ -1,8 +1,8 @@
 import {Component} from 'react'
-import {MdNavigateNext, MdNavigateBefore} from 'react-icons/md'
-import {BiFirstPage, BiLastPage} from 'react-icons/bi'
+
 import Loader from 'react-loader-spinner'
 import UserDetailsItem from '../UserDetailsItem'
+import Pagination from '../Pagination'
 import './index.css'
 
 const apiStatusConstants = {
@@ -16,10 +16,12 @@ class UsersList extends Component {
   state = {
     searchInput: '',
     apiStatus: apiStatusConstants.initial,
-    activePageId: 1,
     usersData: [],
     selectedUsersList: [],
     selectAllUsers: false,
+    usersPerPage: 10,
+    activePage: 1,
+    totalPagesCount: null,
   }
 
   componentDidMount() {
@@ -28,15 +30,18 @@ class UsersList extends Component {
 
   fetchAllTheUsers = async () => {
     this.setState({apiStatus: apiStatusConstants.inProgress})
+    const {usersPerPage} = this.state
 
-    const url = `https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json?offset=5&limit=10`
+    const url = `https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json`
     const response = await fetch(url)
 
     if (response.ok) {
       const fetchedUsersData = await response.json()
+      const totalPagesCount = Math.ceil(fetchedUsersData.length / usersPerPage)
       this.setState({
         usersData: fetchedUsersData,
         apiStatus: apiStatusConstants.success,
+        totalPagesCount,
       })
     } else {
       this.setState({apiStatus: apiStatusConstants.failure})
@@ -68,7 +73,6 @@ class UsersList extends Component {
   editUserInfo = id => {
     const {usersData} = this.state
     const selectedUserInfo = usersData.find(eachUser => eachUser.id === id)
-    console.log(selectedUserInfo)
   }
 
   deleteSelectedUser = id => {
@@ -78,9 +82,12 @@ class UsersList extends Component {
   }
 
   onSelectAllUsers = event => {
-    const {usersData} = this.state
-    const allSelectedUserIds = usersData.map(each => each.id)
-    console.log(allSelectedUserIds)
+    const {usersData, activePage, usersPerPage} = this.state
+    const indexOfLastUser = activePage * usersPerPage
+    const indexOfFirstUser = indexOfLastUser - usersPerPage
+    const currentPageUsers = usersData.slice(indexOfFirstUser, indexOfLastUser)
+    const allSelectedUserIds = currentPageUsers.map(each => each.id)
+
     if (event.target.checked) {
       this.setState({
         selectAllUsers: true,
@@ -93,15 +100,44 @@ class UsersList extends Component {
 
   deleteSelectedUserItems = () => {
     const {selectedUsersList, usersData} = this.state
-
-    // const updateUsersData = usersData.filter(eachUser =>
-    //   selectedUsersList.includes(eachUser.id),
-    // )
-    const updateUsers = usersData.filter(each =>
-      selectedUsersList.filter(eachUser => eachUser.id === each),
+    const updateUsers = usersData.filter(
+      eachUser =>
+        selectedUsersList.findIndex(
+          selectedUserId => selectedUserId === eachUser.id,
+        ) === -1,
     )
-    console.log(updateUsers)
-    // console.log(selectedUsersList)
+    this.setState({usersData: updateUsers})
+  }
+
+  onChangePageNumber = pageNumber => {
+    const {totalPagesCount} = this.state
+    switch (pageNumber) {
+      case 'FIRST':
+        this.setState({activePage: 1})
+        break
+      case 'NEXT':
+        this.setState(prevState => ({
+          activePage:
+            prevState.activePage < totalPagesCount
+              ? prevState.activePage + 1
+              : prevState.activePage,
+        }))
+        break
+      case 'PREVIOUS':
+        this.setState(prevState => ({
+          activePage:
+            prevState.activePage > 1
+              ? prevState.activePage - 1
+              : prevState.activePage,
+        }))
+        break
+      case 'LAST':
+        this.setState({activePage: totalPagesCount})
+        break
+      default:
+        this.setState({activePage: pageNumber})
+        break
+    }
   }
 
   renderLoadingView = () => (
@@ -131,6 +167,9 @@ class UsersList extends Component {
       searchInput,
       selectAllUsers,
       selectedUsersList,
+      activePage,
+      usersPerPage,
+      totalPagesCount,
     } = this.state
     const searchRelateUsersData = usersData.filter(
       eachUser =>
@@ -140,103 +179,53 @@ class UsersList extends Component {
     )
     const shouldShowUsersList = searchRelateUsersData.length > 0
 
+    const indexOfLastUser = activePage * usersPerPage
+    const indexOfFirstUser = indexOfLastUser - usersPerPage
+    const currentPageUsers = searchRelateUsersData.slice(
+      indexOfFirstUser,
+      indexOfLastUser,
+    )
+
     return shouldShowUsersList ? (
-      <ul className="users-list-container">
-        <li className="page-controls-container">
-          <button
-            type="button"
-            onClick={this.deleteSelectedUserItems}
-            className="delete-selected-button"
-          >
-            Delete Selected
-          </button>
-          <div className="page-numbers-container">
-            <button
-              type="button"
-              onClick={this.onChangePageNumber}
-              className="navigate-first"
-            >
-              <BiFirstPage color="black" size={20} />
-            </button>
-            <button
-              type="button"
-              onClick={this.onChangePageNumber}
-              className="navigate-previous"
-            >
-              <MdNavigateBefore color="black" size={20} />
-            </button>
-            <button
-              type="button"
-              onClick={this.onChangePageNumber}
-              className="page-number-button"
-            >
-              1
-            </button>
-            <button
-              type="button"
-              onClick={this.onChangePageNumber}
-              className="page-number-button"
-            >
-              2
-            </button>
-            <button
-              type="button"
-              onClick={this.onChangePageNumber}
-              className="page-number-button active"
-            >
-              3
-            </button>
-            <button
-              type="button"
-              onClick={this.onChangePageNumber}
-              className="page-number-button"
-            >
-              4
-            </button>
-            <button
-              type="button"
-              onClick={this.onChangePageNumber}
-              className="navigate-next"
-            >
-              <MdNavigateNext color="black" size={20} />
-            </button>
-            <button
-              type="button"
-              onClick={this.onChangePageNumber}
-              className="navigate-last"
-            >
-              <BiLastPage color="black" size={20} />
-            </button>
-          </div>
-        </li>
-        <li className="user-details-list-item">
-          <div className="checkbox-container">
-            <input
-              type="checkbox"
-              onChange={this.onSelectAllUsers}
-              className="checkbox"
+      <>
+        <ul className="users-list-container">
+          <li className="user-details-list-item">
+            <div className="checkbox-container">
+              <input
+                type="checkbox"
+                onChange={this.onSelectAllUsers}
+                className="checkbox"
+              />
+            </div>
+            <p className="name-title">Name</p>
+            <p className="email-title">Email</p>
+            <p className="role-title">Role</p>
+            <p className="actions-title">Actions</p>
+          </li>
+          {currentPageUsers.map(eachUser => (
+            <UserDetailsItem
+              key={eachUser.id}
+              userFullDetails={eachUser}
+              addUserIdIntoSelectedUsersList={
+                this.addUserIdIntoSelectedUsersList
+              }
+              removeUserIdFromSelectedUsersList={
+                this.removeUserIdFromSelectedUsersList
+              }
+              selectAllUsers={selectAllUsers}
+              selectedUsersList={selectedUsersList}
+              deleteSelectedUser={this.deleteSelectedUser}
+              editUserInfo={this.editUserInfo}
             />
-          </div>
-          <p className="name-title">Name</p>
-          <p className="email-title">Email</p>
-          <p className="role-title">Role</p>
-          <p className="actions-title">Actions</p>
-        </li>
-        {searchRelateUsersData.map(eachUser => (
-          <UserDetailsItem
-            key={eachUser.id}
-            userFullDetails={eachUser}
-            addUserIdIntoSelectedUsersList={this.addUserIdIntoSelectedUsersList}
-            removeUserIdFromSelectedUsersList={
-              this.removeUserIdFromSelectedUsersList
-            }
-            selectAllUsers={selectAllUsers}
-            selectedUsersList={selectedUsersList}
-            deleteSelectedUser={this.deleteSelectedUser}
-            editUserInfo={this.editUserInfo}
-          />
-        ))}
-      </ul>
+          ))}
+        </ul>
+        <Pagination
+          totalPagesCount={totalPagesCount}
+          deleteSelectedUserItems={this.deleteSelectedUserItems}
+          onChangePageNumber={this.onChangePageNumber}
+          activePage={activePage}
+        />
+      </>
     ) : (
       <div className="no-users-view">
         <h1 className="no-users-heading">No Users Found</h1>
@@ -255,6 +244,13 @@ class UsersList extends Component {
       <p className="usersList-failure-description">
         We are having some trouble processing your request. Please try again.
       </p>
+      <button
+        type="button"
+        className="try-again-button"
+        onClick={this.fetchAllTheUsers}
+      >
+        Tryagain
+      </button>
     </div>
   )
 
@@ -274,8 +270,6 @@ class UsersList extends Component {
   }
 
   render() {
-    const {selectedUsersList} = this.state
-    console.log(selectedUsersList)
     return (
       <div className="all-users-container">
         <h1>All Users List</h1>

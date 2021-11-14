@@ -12,27 +12,28 @@
 }
 .checkbox-container {
   width: 10%;
-  /* border: 1px solid black; */
 }
 .user-name {
   width: 25%;
   text-align: left;
-  /* border: 1px solid white; */
 }
 .user-email {
   width: 25%;
-  /* border: 1px solid white; */
 }
 .user-role {
   width: 25%;
-  /* border: 1px solid white; */
 }
 .actions-container {
   width: 10%;
-  /* border: 1px solid white; */
   display: flex;
   justify-content: space-around;
 }
 .selected-user-item-background-color {
   background-color: lightslategray;
+}
+.delete-icon {
+  cursor: pointer;
+}
+.edit-icon {
+  cursor: pointer;
 }

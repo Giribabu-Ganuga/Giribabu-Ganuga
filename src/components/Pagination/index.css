@@ -1,0 +1,112 @@
+.page-controls-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+.delete-selected-button {
+  margin-right: 30%;
+  background-color: #d40816;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 8px 15px 8px 15px;
+  color: #ffffff;
+  font-weight: 400;
+  font-family: roboto;
+  border: 0.5px solid white;
+}
+.page-numbers-container {
+  display: flex;
+  align-items: center;
+  list-style-type: none;
+  padding-left: 0;
+}
+.page-number-button {
+  border: none;
+  outline: none;
+  background-color: #0967d2;
+  color: #ffffff;
+  border-radius: 100%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  cursor: pointer;
+}
+.active-page-number-button {
+  border: none;
+  outline: none;
+  background-color: #ffffff;
+  color: #0967d2;
+  font-weight: bold;
+  border-radius: 100%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  border: 2px solid #0967d2;
+  cursor: pointer;
+}
+.navigate-next {
+  border: none;
+  outline: none;
+  background-color: lightgrey;
+  border-radius: 100%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  cursor: pointer;
+}
+.navigate-previous {
+  border: none;
+  outline: none;
+  background-color: lightgray;
+  border-radius: 100%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  cursor: pointer;
+}
+.navigate-first {
+  border: none;
+  outline: none;
+  background-color: lightgray;
+  border-radius: 100%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.navigate-last {
+  border: none;
+  outline: none;
+  background-color: lightgray;
+  border-radius: 100%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  cursor: pointer;
+}
+.active-page-number {
+  background-color: #ffffff;
+  border: 2px solid #2d6fd2;
+}

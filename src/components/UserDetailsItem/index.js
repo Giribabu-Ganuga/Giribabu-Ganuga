@@ -10,11 +10,10 @@ const UserDetailsItem = props => {
     removeUserIdFromSelectedUsersList,
     deleteSelectedUser,
     editUserInfo,
-    selectAllUsers,
     selectedUsersList,
   } = props
   const {id, name, email, role} = userFullDetails
-  console.log(selectedUsersList)
+  //   console.log(selectedUsersList)
 
   const onSelectUser = event => {
     const checkedUserId = event.target.value
@@ -27,6 +26,10 @@ const UserDetailsItem = props => {
 
   const userItemBackgroundColorClassName = selectedUsersList.includes(id)
     ? 'selected-user-item-background-color'
+    : ''
+
+  const selectAllCurrentPageUsers = selectedUsersList.includes(id)
+    ? 'checked'
     : ''
 
   const onClickDeleteUser = () => {
@@ -42,30 +45,24 @@ const UserDetailsItem = props => {
       className={`user-details-list-item ${userItemBackgroundColorClassName}`}
     >
       <div className="checkbox-container">
-        {selectAllUsers ? (
-          <input
-            type="checkbox"
-            onChange={onSelectUser}
-            checked={selectAllUsers}
-            value={id}
-            className="checkbox"
-          />
-        ) : (
-          <input
-            type="checkbox"
-            onChange={onSelectUser}
-            //   checked={selectAllUsers}
-            value={id}
-            className="checkbox"
-          />
-        )}
+        <input
+          type="checkbox"
+          onChange={onSelectUser}
+          checked={selectAllCurrentPageUsers}
+          value={id}
+          className="checkbox"
+        />
       </div>
       <p className="user-name">{name}</p>
       <p className="user-email">{email}</p>
       <p className="user-role">{role}</p>
       <div className="actions-container">
-        <BiEdit size={20} onClick={onClickEditUser} />
-        <MdDelete size={23} onClick={onClickDeleteUser} />
+        <BiEdit size={20} onClick={onClickEditUser} className="edit-icon" />
+        <MdDelete
+          size={23}
+          onClick={onClickDeleteUser}
+          className="delete-icon"
+        />
       </div>
     </li>
   )
