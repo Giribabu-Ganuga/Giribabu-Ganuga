@@ -1,11 +1,25 @@
-.page-controls-container {
+.pagination-container {
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 100%;
 }
+@media screen and (max-width: 768px) {
+  .pagination-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+.page-controls-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
 .delete-selected-button {
-  margin-right: 30%;
+  margin-right: 28%;
   background-color: #d40816;
   border: none;
   outline: none;
@@ -16,6 +30,14 @@
   font-weight: 400;
   font-family: roboto;
   border: 0.5px solid white;
+  width: 130px;
+}
+@media screen and (max-width: 768px) {
+  .delete-selected-button {
+    margin-right: 10px;
+    font-size: 12px;
+    padding: 4px 8px 4px 8px;
+  }
 }
 .page-numbers-container {
   display: flex;
@@ -23,11 +45,10 @@
   list-style-type: none;
   padding-left: 0;
 }
-.page-number-button {
+.navigate-button {
+  background-color: lightgrey;
   border: none;
   outline: none;
-  background-color: #0967d2;
-  color: #ffffff;
   border-radius: 100%;
   width: 30px;
   height: 30px;
@@ -37,76 +58,20 @@
   margin-right: 10px;
   cursor: pointer;
 }
+.page-number-button {
+  background-color: #0967d2;
+  color: #ffffff;
+}
+@media screen and (max-width: 768px) {
+  .navigate-button {
+    width: 25px;
+    height: 25px;
+  }
+}
+
 .active-page-number-button {
-  border: none;
-  outline: none;
   background-color: #ffffff;
   color: #0967d2;
   font-weight: bold;
-  border-radius: 100%;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 10px;
   border: 2px solid #0967d2;
-  cursor: pointer;
-}
-.navigate-next {
-  border: none;
-  outline: none;
-  background-color: lightgrey;
-  border-radius: 100%;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 10px;
-  cursor: pointer;
-}
-.navigate-previous {
-  border: none;
-  outline: none;
-  background-color: lightgray;
-  border-radius: 100%;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 10px;
-  cursor: pointer;
-}
-.navigate-first {
-  border: none;
-  outline: none;
-  background-color: lightgray;
-  border-radius: 100%;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 10px;
-  cursor: pointer;
-}
-
-.navigate-last {
-  border: none;
-  outline: none;
-  background-color: lightgray;
-  border-radius: 100%;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 10px;
-  cursor: pointer;
-}
-.active-page-number {
-  background-color: #ffffff;
-  border: 2px solid #2d6fd2;
 }

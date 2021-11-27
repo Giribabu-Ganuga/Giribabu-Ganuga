@@ -3,14 +3,30 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-image: linear-gradient(to top right, #1d2671, #c33764);
+  background-image: linear-gradient(to top right, #c01b45, #1d2671);
   color: #e6dec8;
+}
+.main-heading {
+  font-size: 32px;
+  font-weight: 500;
+  color: orange;
+  font-family: Bree serif;
+}
+@media screen and (max-width: 768px) {
+  .main-heading {
+    font-size: 25px;
+  }
 }
 .users-display-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 90%;
+}
+@media screen and (max-width: 768px) {
+  .users-display-container {
+    width: 95%;
+  }
 }
 .users-list-container {
   display: flex;
@@ -30,9 +46,14 @@
   padding-bottom: 8px;
   padding-right: 16px;
   align-self: flex-start;
-  width: 50%;
+  width: 40%;
 }
-
+@media screen and (max-width: 768px) {
+  .search-input-container {
+    width: 95%;
+    align-self: center;
+  }
+}
 .search-input {
   background-color: #f1f5f9;
   color: #0f172a;
@@ -44,35 +65,43 @@
   flex-grow: 1;
 }
 .checkbox-container {
-  width: 10%;
+  width: 5%;
+  margin-right: 5px;
 }
-.name-title {
-  width: 25%;
+.column-title {
   text-align: left;
-  color: #000000;
+  color: #ce7c7c;
   font-size: 23px;
   font-weight: bold;
+  font-family: Cambria;
 }
-.email-title {
-  width: 25%;
-  color: #000000;
-  font-weight: bold;
-  font-size: 23px;
+@media screen and (max-width: 768px) {
+  .column-title {
+    font-size: 18px;
+  }
 }
-.role-title {
+.name {
   width: 25%;
-  color: #000000;
-  font-weight: bold;
-  font-size: 23px;
+}
+.email {
+  width: 25%;
+}
+.role {
+  width: 25%;
 }
 
-.actions-title {
-  width: 10%;
-  color: #000000;
-  font-weight: bold;
-  font-size: 23px;
+.actions {
+  width: 15%;
   display: flex;
   justify-content: space-around;
+}
+@media screen and (max-width: 768px) {
+  .email {
+    width: 28%;
+  }
+  .role {
+    width: 22%;
+  }
 }
 .usersList-error-view-container {
   display: flex;

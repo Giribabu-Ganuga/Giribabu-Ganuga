@@ -21,7 +21,10 @@ class UsersList extends Component {
     selectAllUsers: false,
     usersPerPage: 10,
     activePage: 1,
-    totalPagesCount: null,
+    editUserId: null,
+    editUserName: '',
+    editUserEmail: '',
+    editUserRole: '',
   }
 
   componentDidMount() {
@@ -30,18 +33,14 @@ class UsersList extends Component {
 
   fetchAllTheUsers = async () => {
     this.setState({apiStatus: apiStatusConstants.inProgress})
-    const {usersPerPage} = this.state
-
     const url = `https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json`
     const response = await fetch(url)
 
     if (response.ok) {
       const fetchedUsersData = await response.json()
-      const totalPagesCount = Math.ceil(fetchedUsersData.length / usersPerPage)
       this.setState({
         usersData: fetchedUsersData,
         apiStatus: apiStatusConstants.success,
-        totalPagesCount,
       })
     } else {
       this.setState({apiStatus: apiStatusConstants.failure})
@@ -72,7 +71,53 @@ class UsersList extends Component {
 
   editUserInfo = id => {
     const {usersData} = this.state
-    const selectedUserInfo = usersData.find(eachUser => eachUser.id === id)
+    const selectedUserDetails = usersData.find(eachUser => eachUser.id === id)
+    if (selectedUserDetails) {
+      this.setState({
+        editUserId: selectedUserDetails.id,
+        editUserName: selectedUserDetails.name,
+        editUserEmail: selectedUserDetails.email,
+        editUserRole: selectedUserDetails.role,
+      })
+    }
+    // this.setState({editUserId: id})
+  }
+
+  updateEditedUserDetails = () => {
+    const {
+      editUserId,
+      editUserName,
+      editUserEmail,
+      editUserRole,
+      usersData,
+    } = this.state
+
+    const updatedUserDetails = {
+      id: editUserId,
+      name: editUserName,
+      email: editUserEmail,
+      role: editUserRole,
+    }
+
+    const updatedUsersData = usersData.map(eachUser =>
+      eachUser.id === editUserId ? updatedUserDetails : eachUser,
+    )
+    this.setState({
+      usersData: updatedUsersData,
+      editUserId: null,
+    })
+  }
+
+  onEditUserName = event => {
+    this.setState({editUserName: event.target.value})
+  }
+
+  onEditUserEmail = event => {
+    this.setState({editUserEmail: event.target.value})
+  }
+
+  onEditUserRole = event => {
+    this.setState({editUserRole: event.target.value})
   }
 
   deleteSelectedUser = id => {
@@ -106,11 +151,18 @@ class UsersList extends Component {
           selectedUserId => selectedUserId === eachUser.id,
         ) === -1,
     )
-    this.setState({usersData: updateUsers})
+
+    this.setState({
+      usersData: updateUsers,
+      selectAllUsers: false,
+    })
   }
 
   onChangePageNumber = pageNumber => {
-    const {totalPagesCount} = this.state
+    this.setState({selectAllUsers: false, selectedUsersList: []})
+    const {usersData, usersPerPage} = this.state
+    const totalPagesCount = Math.ceil(usersData.length / usersPerPage)
+
     switch (pageNumber) {
       case 'FIRST':
         this.setState({activePage: 1})
@@ -169,14 +221,19 @@ class UsersList extends Component {
       selectedUsersList,
       activePage,
       usersPerPage,
-      totalPagesCount,
+      editUserId,
+      editUserName,
+      editUserEmail,
+      editUserRole,
     } = this.state
+
     const searchRelateUsersData = usersData.filter(
       eachUser =>
         eachUser.name.toLowerCase().includes(searchInput.toLowerCase()) ||
         eachUser.email.toLowerCase().includes(searchInput.toLowerCase()) ||
         eachUser.role.toLowerCase().includes(searchInput.toLowerCase()),
     )
+
     const shouldShowUsersList = searchRelateUsersData.length > 0
 
     const indexOfLastUser = activePage * usersPerPage
@@ -195,12 +252,13 @@ class UsersList extends Component {
                 type="checkbox"
                 onChange={this.onSelectAllUsers}
                 className="checkbox"
+                checked={selectAllUsers}
               />
             </div>
-            <p className="name-title">Name</p>
-            <p className="email-title">Email</p>
-            <p className="role-title">Role</p>
-            <p className="actions-title">Actions</p>
+            <p className="column-title name">Name</p>
+            <p className="column-title email">Email</p>
+            <p className="column-title role">Role</p>
+            <p className="column-title actions">Actions</p>
           </li>
           {currentPageUsers.map(eachUser => (
             <UserDetailsItem
@@ -216,11 +274,21 @@ class UsersList extends Component {
               selectedUsersList={selectedUsersList}
               deleteSelectedUser={this.deleteSelectedUser}
               editUserInfo={this.editUserInfo}
+              editUserId={editUserId}
+              editUserName={editUserName}
+              editUserEmail={editUserEmail}
+              editUserRole={editUserRole}
+              updateEditedUserDetails={this.updateEditedUserDetails}
+              onEditUserName={this.onEditUserName}
+              onEditUserEmail={this.onEditUserEmail}
+              onEditUserRole={this.onEditUserRole}
             />
           ))}
         </ul>
         <Pagination
-          totalPagesCount={totalPagesCount}
+          totalPagesCount={Math.ceil(
+            searchRelateUsersData.length / usersPerPage,
+          )}
           deleteSelectedUserItems={this.deleteSelectedUserItems}
           onChangePageNumber={this.onChangePageNumber}
           activePage={activePage}
@@ -272,8 +340,7 @@ class UsersList extends Component {
   render() {
     return (
       <div className="all-users-container">
-        <h1>All Users List</h1>
-
+        <h1 className="main-heading">All Users List</h1>
         <div className="users-display-container">
           {this.renderSearchInput()}
           {this.renderAllUsersList()}
